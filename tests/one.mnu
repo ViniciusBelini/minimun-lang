@@ -1,0 +1,45 @@
+import io
+import math
+
+show "Guess the number!"
+
+function start
+    add number int
+    put number math.Rand(0, 100)
+
+    loop true
+        add strGuess str
+        put strGuess io.Input("Choose a number between 0 and 100: ")
+
+        add guess int!
+        put guess int(strGuess)
+
+        guess.ok
+            if guess > number
+                show "Too high! Try a lower number."
+                continue
+            elif guess < number
+                show "Too lower! Try a high number."
+                continue
+            else
+                show "Congratulations! You won the game."
+                break
+            end
+        end
+
+        guess.error
+            show "Type a valid int number!"
+        end
+    end
+end
+
+loop true
+    start()
+
+    add playAgain str
+    put playAgain io.Input("Play again? (Y, n): ")
+
+    if playAgain != "Y"
+        break
+    end
+end

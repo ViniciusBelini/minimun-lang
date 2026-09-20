@@ -1,0 +1,24 @@
+// paper da linguagem minimun
+
+// atribuições
+
+// add IDENT TYPE
+// put IDENT VALUE
+
+add idade int // adiciona ao escopo um container de int
+put idade 21 // coloca no container o valor 21
+
+// pode também não usar o add, ao usar o put
+// irá adicionar ao escopo o container com o tipo
+// imutável da primeira atribuição
+
+// tipos primitivos
+
+21 // int
+1.5 // float
+"Vinícius" // str
+false // bool
+
+// escopos
+
+//
