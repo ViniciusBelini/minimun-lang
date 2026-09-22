@@ -31,66 +31,54 @@ static bool sameRunnerType(RunnerValue left, RunnerValue right)
     return left.type == right.type;
 }
 
-RunnerValue runner(Ast ast)
+static RunnerValue runnerBlock(Ast block)
 {
-    RunnerValue ret;
+    switch(block.type)
+    {
+        case TOKEN_ERROR:
+            printf("Error: %.*s at line %d, column %d\n", block.strToken.length, block.strToken.start, block.line, block.column);
+            return (RunnerValue){.type = RUNNER_BOOL,.as.boolean = 0};
+        case TOKEN_INT:
+            return (RunnerValue){.type = RUNNER_INT,.as.number = block.intToken};
+        case TOKEN_SHOW:
+            RunnerValue args = runnerBlock(block.block.statements[0]);
 
+            printRunnerValue(args);
+
+            printf("\n");
+
+            return (RunnerValue){.type = RUNNER_BOOL,.as.boolean = 1};
+        case TOKEN_OPERATOR:
+            RunnerValue left = runnerBlock(*block.op.left);
+            RunnerValue right = runnerBlock(*block.op.right);
+
+            switch(block.op.type)
+            {
+                case OP_MUL:
+                    return (RunnerValue){.type = RUNNER_INT,.as.number = left.as.number * right.as.number};
+                case OP_DIV:
+                    return (RunnerValue){.type = RUNNER_INT,.as.number = left.as.number / right.as.number};
+                case OP_MOD:
+                    return (RunnerValue){.type = RUNNER_INT,.as.number = left.as.number % right.as.number};
+                case OP_ADD:
+                    return (RunnerValue){.type = RUNNER_INT,.as.number = left.as.number + right.as.number};
+                case OP_SUB:
+                    return (RunnerValue){.type = RUNNER_INT,.as.number = left.as.number - right.as.number};
+                default:
+                    return (RunnerValue){.type = RUNNER_BOOL,.as.boolean = 0};
+
+            }
+        default:
+            return (RunnerValue){.type = RUNNER_BOOL,.as.boolean = 0};
+    }
+}
+
+void runner(Ast ast)
+{
     for(size_t i = 0;i < ast.block.size;i++)
     {
         Ast block = ast.block.statements[i];
 
-        switch(block.type)
-        {
-            case TOKEN_ERROR:
-                printf("Error: %.*s at line %d, column %d\n", block.strToken.length, block.strToken.start, block.line, block.column);
-                break;
-            case TOKEN_INT:
-                // printf("%d\n", block.intToken);
-                ret.type = RUNNER_INT;
-                ret.as.number = block.intToken;
-                continue;
-            case TOKEN_SHOW:
-                // printf("%d\n", block.showArgs->type);
-                RunnerValue args = runner(block);
-
-                printRunnerValue(args);
-
-                printf("\n");
-
-                continue;
-            case TOKEN_OPERATOR:
-                RunnerValue left = runner(fixRunnerNode(block.op.left));
-                RunnerValue right = runner(fixRunnerNode(block.op.right));
-
-                // printf("%d\n", block.op.type);
-
-                switch(block.op.type)
-                {
-                    case OP_MUL:
-                        if(sameRunnerType(left, right) && left.type == RUNNER_INT) return (RunnerValue){.type = RUNNER_INT,.as.number = left.as.number * right.as.number};
-                    case OP_DIV:
-                        if(sameRunnerType(left, right) && left.type == RUNNER_INT) return (RunnerValue){.type = RUNNER_INT,.as.number = left.as.number / right.as.number};
-                    case OP_MOD:
-                        if(sameRunnerType(left, right) && left.type == RUNNER_INT) return (RunnerValue){.type = RUNNER_INT,.as.number = left.as.number % right.as.number};
-                    case OP_ADD:
-                        if(sameRunnerType(left, right) && left.type == RUNNER_INT)
-                        {
-                            return (RunnerValue){.type = RUNNER_INT,.as.number = left.as.number + right.as.number};
-                        }else
-                        {
-                            // printf("%d\n", left.type);
-                        }
-                    case OP_SUB:
-                        if(sameRunnerType(left, right) && left.type == RUNNER_INT) return (RunnerValue){.type = RUNNER_INT,.as.number = left.as.number / right.as.number};
-                    default:
-                        return (RunnerValue){.type = RUNNER_INT,.as.number = 0};
-
-                }
-            default:
-                // printf("%d\n", block.line);
-                ret.type = RUNNER_NULL;
-        }
+        RunnerValue result = runnerBlock(block);
     }
-
-    return ret;
 }

@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
     astnize_init(token, sizeTokens);
     Ast ast = firstAst(false);
 
-    RunnerValue run = runner(ast);
+    runner(ast);
 
     free(source);
     free(token);

@@ -75,6 +75,7 @@ static void skip_whitespace()
     for(;;)
     {
         char c = peek();
+
         switch(c)
         {
             case ' ':
@@ -87,7 +88,6 @@ static void skip_whitespace()
                 {
                     while(peek() != '\n' && !is_at_end()) advance();
                 }
-                break;
             default:
                 return;
         }

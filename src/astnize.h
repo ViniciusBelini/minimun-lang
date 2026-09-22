@@ -88,7 +88,7 @@ typedef struct
 
 extern Ast *ast;
 extern size_t astSize;
-extern size_t astCurrent;
+extern int astCurrent;
 
 extern Token *tokensList;
 extern size_t sizeTokens;

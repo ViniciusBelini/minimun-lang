@@ -6,7 +6,8 @@
 typedef enum
 {
     RUNNER_NULL,
-    RUNNER_INT
+    RUNNER_INT,
+    RUNNER_BOOL
 } RunnerType;
 
 typedef struct
@@ -22,6 +23,6 @@ typedef struct
 
 } RunnerValue;
 
-RunnerValue runner(Ast ast);
+void runner(Ast ast);
 
 #endif
